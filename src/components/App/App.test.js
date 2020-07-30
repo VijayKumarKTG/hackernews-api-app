@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom';
 import renderer from 'react-test-renderer';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import App, { Search, Button, Table } from './App';
+import App from './App';
+import { Button } from '../Button';
+import { Table } from '../Table';
+import { Search } from '../Search';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -73,6 +76,15 @@ describe('Table', () => {
     ],
     sortKey: 'TITLE',
     isSortedReverse: false,
+    onDismiss: (id) => {
+      const { searchKey, results } = this.state;
+      const { hits, page } = results[searchKey];
+      const isNotId = (item) => item.objectID !== id;
+      const updatedHits = hits.filter(isNotId);
+      this.setState({
+        results: { ...results, [searchKey]: { hits: updatedHits, page } },
+      });
+    },
   };
   it('renders without crashing', () => {
     const div = document.createElement('div');
